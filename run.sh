@@ -117,17 +117,14 @@ if [ $? -ne 0 ]; then
 fi
 echo "----------------"
 
-# Install SSH for mpirun
-echo "Installing git and openssh-client in the pod..."
-minikube kubectl -- exec software-eessi-io-pod -- bash -c "apt update && apt install -y git openssh-client" &> /dev/null
-echo "----------------"
+
+MPI_COMMAND="mpirun -n ${KUBE_EESSIDEMO_CPUS} --mca plm isolated --allow-run-as-root"
 
 echo "Cloning eessi-demo repository and running QuantumESPRESSO example..."
 minikube kubectl -- exec software-eessi-io-pod -- bash -c "\
-    git clone https://github.com/EESSI/eessi-demo.git && \
     source /cvmfs/software.eessi.io/versions/2023.06/init/bash && \
-    cd eessi-demo && \
-    cd QuantumESPRESSO && \
-    ./run.sh \
+    git clone https://github.com/EESSI/eessi-demo.git && \
+    cd eessi-demo/QuantumESPRESSO && \
+    RUN_COMMAND="${MPI_COMMAND}" ./run.sh \
 "
 echo "----------------"
