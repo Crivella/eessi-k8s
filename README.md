@@ -30,6 +30,7 @@ export KUBE_EESSIDEMO_PROFILE=eessi-demo
 
   ```bash
   minikube start --cpus=4 --memory=2048 --profile=eessi-demo
+  minikube profile eessi-demo
   ```
 
 - Install the cvmfs-csi driver using helm (with the provided values file to configure EESSI access)

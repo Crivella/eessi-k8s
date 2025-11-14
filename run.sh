@@ -95,7 +95,7 @@ echo "----------------"
 
 # Create the Persistent Volume Claim
 echo "Creating Persistent Volume Claim..."
-minikube kubectl -- apply -f ${CONFIG_DIR}/pvc-eessi.yml
+minikube kubectl -- apply -f ${CONFIG_DIR}/pvc-eessi.yaml
 minikube kubectl -- wait --for=jsonpath='{.status.phase}'=Bound pvc/software-eessi-io-pvc --timeout=30s
 if [ $? -ne 0 ]; then
     echo "Error: PVC did not reach 'Bound' state within the timeout period."
@@ -107,7 +107,7 @@ sleep 2
 
 # Create the Pod
 echo "Creating Pod..."
-minikube kubectl -- apply -f ${CONFIG_DIR}/pod-eessi.yml
+minikube kubectl -- apply -f ${CONFIG_DIR}/pod-eessi.yaml
 # Wait for the pod to be ready before executing commands
 echo "Waiting for pod to be ready..."
 minikube kubectl -- wait --for=condition=Ready pod/software-eessi-io-pod --timeout=60s
