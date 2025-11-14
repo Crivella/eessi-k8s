@@ -1,6 +1,6 @@
 # Using EESSI in kubernetes with cvmfs-csi
 
-Showcase how to access and use EESSI from within a kubernetes cluster using the [CernVM-FS Container Storage Interface (CSI) driver](https://github.com/cvmfs-contrib/cvmfs-csi).
+Showcase how to access and use [EESSI](https://www.eessi.io/docs/) from within a kubernetes cluster using the [CernVM-FS Container Storage Interface (CSI) driver](https://github.com/cvmfs-contrib/cvmfs-csi).
 
 ## Requirements
 
