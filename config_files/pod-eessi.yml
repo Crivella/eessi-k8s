@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: software-eessi-io-pod
+spec:
+  containers:
+    - name: idle-container
+      image: ubuntu:24.04
+      imagePullPolicy: IfNotPresent
+      command: [ "/bin/sh", "-c", "trap : TERM INT; (while true; do sleep 1000; done) & wait" ]
+      volumeMounts:
+        - name: software-eessi-io-vol
+          mountPath: /cvmfs/software.eessi.io
+  volumes:
+    - name: software-eessi-io-vol
+      persistentVolumeClaim:
+        claimName: software-eessi-io-pvc

@@ -1,0 +1,27 @@
+---
+cmvfsHttpProxy: DIRECT
+
+extraConfigMaps:
+  cvmfs-csi-config-d:
+    software.eessi.io.conf: |
+      CVMFS_SERVER_URL="http://aws-eu-central-s1.eessi.science/cvmfs/@fqrn@;http://azure-us-east-s1.eessi.science/cvmfs/@fqrn@"
+      CVMFS_PUBLIC_KEY='/etc/cvmfs/config.d/software.eessi.io.pub'
+    software.eessi.io.pub: |
+      -----BEGIN PUBLIC KEY-----
+      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyau1UFUcoiqpE5U9StON
+      W0Trc3PM02AA5kYgknrqZJdusj5PcNg7rhOnrd+SX8BIiVtVMr6mqORXsJ2FNydJ
+      lfm512GcmurM154m6Hz4I+UttcpVLe1CvlyxjjCrN0siSiPnLDONy3Ih1PWyRlA/
+      sobSaIhx3Vyn1IzC0nbjstKObAYJs2kjokS+cipX2oIXJSoxkhvXcxmiMCi2GQIs
+      KTQDT+bATs9eK+ZqY4n5x8VX87AlMBQuSCP5mA8VQPx4aCf8AjHWAn3qmPrhk3od
+      Z/Cl9vrYzoWJT1HOyumv7aEv7UlY81++3w/AwYKXLJI6ioop2AotjrUm3w2U3+k7
+      WQIDAQAB
+      -----END PUBLIC KEY-----
+
+specificRepositoryStorageClasses:
+  - name: software-eessi-io
+    repository: software.eessi.io
+
+# Path on the host where to mount the autofs-managed CVMFS root.
+# The directory will be created if it doesn't exist.
+# automountHostPath: /var/cvmfs
+...
