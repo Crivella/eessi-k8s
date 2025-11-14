@@ -53,7 +53,7 @@ export KUBE_EESSIDEMO_PROFILE=eessi-demo
 - Access the pod
 
   ```bash
-  minikube kubectl -- exec -it eessi-pod -- bash
+  minikube kubectl -- exec -it software-eessi-io-pod -- bash
   ```
 
 - Run the QE demo inside the pod
