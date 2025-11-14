@@ -56,7 +56,7 @@ export KUBE_EESSIDEMO_PROFILE=eessi-demo
   minikube kubectl -- exec -it eessi-pod -- bash
   ```
 
-- Run the QE demon inside the pod
+- Run the QE demo inside the pod
 
   ```bash
   # Install ssh for OpenMPI and git to clone the repo
