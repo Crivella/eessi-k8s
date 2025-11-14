@@ -28,6 +28,9 @@ fi
 if [ -z "$KUBE_EESSIDEMO_CLEANUP" ]; then
     KUBE_EESSIDEMO_CLEANUP=true
 fi
+if [ -z "$KUBE_EESSIDEMO_CLEANUP_CLUSTER" ]; then
+    KUBE_EESSIDEMO_CLEANUP_CLUSTER=false
+fi
 if [ -z "$KUBE_EESSIDEMO_PROFILE" ]; then
     KUBE_EESSIDEMO_PROFILE="eessi-demo"
 fi
@@ -41,7 +44,10 @@ function cleanup {
     minikube kubectl -- delete -f ${CONFIG_DIR}/pod-eessi.yml
     minikube kubectl -- delete -f ${CONFIG_DIR}/pvc-eessi.yml
     helm uninstall cvmfs-csi
-    minikube delete -p ${KUBE_EESSIDEMO_PROFILE}
+    if [ "$KUBE_EESSIDEMO_CLEANUP_CLUSTER" == "true" ]; then
+        echo "Deleting minikube cluster..."
+        minikube delete -p ${KUBE_EESSIDEMO_PROFILE}
+    fi
     if [ -n "$PREVIOUS_PROFILE" ]; then
         minikube profile "$PREVIOUS_PROFILE"
     fi
@@ -90,11 +96,13 @@ echo "----------------"
 # Create the Persistent Volume Claim
 echo "Creating Persistent Volume Claim..."
 minikube kubectl -- apply -f ${CONFIG_DIR}/pvc-eessi.yml
-minikube kubectl -- wait --for=create pvc/software-eessi-io-pvc --timeout=30s
+minikube kubectl -- wait --for=jsonpath='{.status.phase}'=Bound pvc/software-eessi-io-pvc --timeout=30s
 if [ $? -ne 0 ]; then
     echo "Error: PVC did not reach 'Bound' state within the timeout period."
     exit 1
 fi
+echo "Persistent Volume Claim created and bound."
+echo "----------------"
 sleep 2
 
 # Create the Pod

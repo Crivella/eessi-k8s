@@ -69,3 +69,7 @@ export KUBE_EESSIDEMO_PROFILE=eessi-demo
   # Run the QE demo
   ./run.sh
   ```
+
+## Possible errors
+
+- `cvmfs transport endpoint is not connected`: Recreating the PVC/POD usually solves this issue.

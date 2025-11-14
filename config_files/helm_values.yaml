@@ -1,12 +1,11 @@
----
-cmvfsHttpProxy: DIRECT
-
 extraConfigMaps:
-  cvmfs-csi-config-d:
-    software.eessi.io.conf: |
+  cvmfs-csi-domain-d:
+    eessi.io.conf: |
+      CVMFS_HTTP_PROXY="DIRECT"
       CVMFS_SERVER_URL="http://aws-eu-central-s1.eessi.science/cvmfs/@fqrn@;http://azure-us-east-s1.eessi.science/cvmfs/@fqrn@"
-      CVMFS_PUBLIC_KEY='/etc/cvmfs/config.d/software.eessi.io.pub'
-    software.eessi.io.pub: |
+      CVMFS_KEYS_DIR="/etc/cvmfs/keys/eessi.io"
+  cvmfs-csi-keys:
+    eessi.io.pub: |
       -----BEGIN PUBLIC KEY-----
       MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyau1UFUcoiqpE5U9StON
       W0Trc3PM02AA5kYgknrqZJdusj5PcNg7rhOnrd+SX8BIiVtVMr6mqORXsJ2FNydJ
@@ -17,11 +16,66 @@ extraConfigMaps:
       WQIDAQAB
       -----END PUBLIC KEY-----
 
+# Add the extra domain.d and keys configmaps to the nodeplugin pods
+# dics will replace instead of update so they need to specify also the original values from
+# https://github.com/cvmfs-contrib/cvmfs-csi/blob/master/deployments/helm/cvmfs-csi/values.yaml
+nodeplugin:
+  extraVolumes:
+    # Original volumes from cvmfs-csi values.yaml
+    - name: etc-cvmfs-default-local
+      configMap:
+        name: cvmfs-csi-default-local
+    - name: etc-cvmfs-config-d
+      configMap:
+        name: cvmfs-csi-config-d
+    - name: etc-cvmfs-default-d
+      configMap:
+        name: cvmfs-csi-default-d
+    # New volumes for eessi.io
+    - name: etc-cvmfs-domain-d
+      configMap:
+        name: cvmfs-csi-domain-d
+    - name: etc-cvmfs-keys
+      configMap:
+        name: cvmfs-csi-keys
+
+  automount:
+    extraVolumeMounts:
+      # Original mounts from cvmfs-csi values.yaml
+      - name: etc-cvmfs-default-local
+        mountPath: /etc/cvmfs/default.local
+        subPath: default.local
+      - name: etc-cvmfs-config-d
+        mountPath: /etc/cvmfs/config.d
+      # New mounts for eessi.io
+      - name: etc-cvmfs-domain-d
+        mountPath: /etc/cvmfs/domain.d/eessi.io.conf
+        subPath: eessi.io.conf
+      - name: etc-cvmfs-keys
+        mountPath: /etc/cvmfs/keys/eessi.io/eessi.io.pub
+        subPath: eessi.io.pub
+  
+  automountReconciler:
+    extraVolumeMounts:
+      # Original mounts from cvmfs-csi values.yaml
+      - name: etc-cvmfs-default-local
+        mountPath: /etc/cvmfs/default.local
+        subPath: default.local
+      - name: etc-cvmfs-config-d
+        mountPath: /etc/cvmfs/config.d
+      # New mounts for eessi.io
+      - name: etc-cvmfs-domain-d
+        mountPath: /etc/cvmfs/domain.d/eessi.io.conf
+        subPath: eessi.io.conf
+      - name: etc-cvmfs-keys
+        mountPath: /etc/cvmfs/keys/eessi.io/eessi.io.pub
+        subPath: eessi.io.pub
+
+# Automatically create the StorageClass for singlemount-ing the software.eessi.io repository
 specificRepositoryStorageClasses:
   - name: software-eessi-io
     repository: software.eessi.io
 
 # Path on the host where to mount the autofs-managed CVMFS root.
 # The directory will be created if it doesn't exist.
-# automountHostPath: /var/cvmfs
-...
+automountHostPath: /var/cvmfs
