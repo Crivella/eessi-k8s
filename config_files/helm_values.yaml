@@ -1,3 +1,8 @@
+# Helm values to deploy cvmfs-csi with eessi.io CVMFS repository support
+
+# Configure the default CVMFS HTTP proxy to DIRECT (will allow also cern.ch repos to work out of the box)
+cmvfsHttpProxy: DIRECT
+
 extraConfigMaps:
   cvmfs-csi-domain-d:
     eessi.io.conf: |
